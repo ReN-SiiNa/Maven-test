@@ -1,30 +1,33 @@
 pipeline {
     agent any
     tools {
-        maven 'sonarmaven'
+        maven 'sonarmaven' // Ensure this matches the Maven configuration in Jenkins
     }
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
-        PATH = 'C:\\Program Files\\Java\\jdk-17\\bin'
+        SONAR_TOKEN = credentials('sonar-token') // SonarQube token stored in Jenkins credentials
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17' // Path to JDK
+        PATH = "${JAVA_HOME}\\bin;%PATH%" // Append JDK to PATH
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // Check out code from SCM
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
+                echo 'Building the project...'
                 bat 'mvn clean package'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarqube') { // Ensure this matches your SonarQube configuration
+                echo 'Starting SonarQube Analysis...'
+                withSonarQubeEnv('sonarqube') { // Ensure 'sonarqube' matches your SonarQube configuration in Jenkins
                     bat """
                         mvn sonar:sonar ^
                         -Dsonar.projectKey=aryanMaven ^
@@ -39,10 +42,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed'
+            echo 'Pipeline failed. Please check the logs for errors.'
         }
     }
 }
