@@ -5,8 +5,6 @@ pipeline {
     }
     environment {
         SONAR_TOKEN = credentials('sonar-token') // SonarQube token stored in Jenkins credentials
-        JAVA_HOME = 'C:/Program Files/Java/jdk-17' // Path to JDK
-        PATH = "C:/Program Files/Java/jdk-17/bin" // Append JDK to PATH
     }
 
     stages {
