@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Check out code from SCM
+                echo 'Checking out the code...'
                 checkout scm
             }
         }
@@ -22,17 +22,24 @@ pipeline {
             }
         }
 
+        stage('Code Coverage') {
+            steps {
+                echo 'Running tests and generating JaCoCo coverage report...'
+                bat 'mvn clean verify' // Runs tests and generates JaCoCo reports
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
-                echo 'Starting SonarQube Analysis...' // Ensure 'sonarqube' matches your SonarQube configuration in Jenkins
-                    bat """
-                        mvn sonar:sonar ^
-                        -Dsonar.projectKey=aryanMaven ^
-                        -Dsonar.sources=src/main/java ^
-                        -Dsonar.host.url=http://localhost:9000 ^
-                        -Dsonar.login=%SONAR_TOKEN%
-                    """
-                
+                echo 'Starting SonarQube Analysis...'
+                bat """
+                    mvn sonar:sonar ^ 
+                    -Dsonar.projectKey=aryanMaven ^ 
+                    -Dsonar.sources=src/main/java ^ 
+                    -Dsonar.host.url=http://localhost:9000 ^ 
+                    -Dsonar.login=%SONAR_TOKEN% ^ 
+                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                """
             }
         }
     }
