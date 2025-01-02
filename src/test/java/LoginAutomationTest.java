@@ -25,7 +25,7 @@ public class LoginAutomationTest {
             driver = new ChromeDriver(options);
 
             // Navigate to the login page
-            driver.get("https://example.com/login");
+            driver.get("https://www.saucedemo.com/");
 
             // Locate the username and password fields, and login button
             WebElement usernameField = driver.findElement(By.id("username"));
