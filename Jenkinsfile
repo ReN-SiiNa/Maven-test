@@ -1,10 +1,10 @@
 pipeline {
     agent any
     tools {
-        maven 'sonarmaven' // Ensure this matches the Maven configuration in Jenkins
+        maven 'sonarmaven'
     }
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // SonarQube token stored in Jenkins credentials
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -25,7 +25,7 @@ pipeline {
         stage('Code Coverage') {
             steps {
                 echo 'Running tests and generating JaCoCo coverage report...'
-                bat 'mvn clean verify' // Runs tests and generates JaCoCo reports
+                bat 'mvn clean verify'
             }
         }
 
@@ -47,6 +47,14 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully!'
+            publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: false,
+                reportDir: 'target/site/jacoco',
+                reportFiles: 'index.html',
+                reportName: 'JaCoCo Code Coverage Report'
+            ])
         }
         failure {
             echo 'Pipeline failed. Please check the logs for errors.'
