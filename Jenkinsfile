@@ -34,7 +34,7 @@ pipeline {
                 echo 'Starting SonarQube Analysis...'
                 bat """
                     mvn sonar:sonar ^ 
-                    -Dsonar.projectKey=aryanMaven ^ 
+                    -Dsonar.projectKey=mavenaryan ^ 
                     -Dsonar.sources=src/main/java ^ 
                     -Dsonar.host.url=http://localhost:9000 ^ 
                     -Dsonar.login=%SONAR_TOKEN% ^ 
