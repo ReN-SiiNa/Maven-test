@@ -60,33 +60,47 @@
                 <version>3.9.1.2184</version>
             </plugin>
 
-            <!-- JaCoCo Maven Plugin for code coverage -->
+            <!-- JaCoCo Maven Plugin for Code Coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.10</version>
                 <executions>
-                    <!-- First execution for preparing the agent -->
+                    <!-- Execution for preparing the JaCoCo agent -->
                     <execution>
-                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
 
-                    <!-- Second execution for generating the report -->
+                    <!-- Execution for generating the JaCoCo report -->
                     <execution>
                         <id>report</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- PMD Plugin for Code Duplication Detection -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.14.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>pmd</goal>
+                        </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
-                            <formats>
-                                <format>html</format>
-                                <format>xml</format> <!-- Generates XML report for CI tools -->
-                            </formats>
+                            <!-- PMD Configuration for Duplication -->
+                            <rulesets>
+                                <ruleset>rulesets/java/duplicates.xml</ruleset>
+                            </rulesets>
+                            <outputFile>target/pmd-duplicates.xml</outputFile>
+                            <generateHtmlReport>false</generateHtmlReport>
                         </configuration>
                     </execution>
                 </executions>
