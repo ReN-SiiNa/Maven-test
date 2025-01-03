@@ -1,16 +1,13 @@
 pipeline {
     agent any
-
     tools {
         maven 'sonarmaven' // Maven installation configured in Jenkins
     }
-
     environment {
         SONAR_TOKEN = credentials('sonar-token') // Securely retrieve SonarQube token
         SONAR_HOST_URL = 'http://localhost:9000' // Replace with your SonarQube server URL
-        SONAR_PROJECT_KEY = 'mavenaryan'         // Replace with your project key
+        SONAR_PROJECT_KEY = 'mavenaryan' // Replace with your project key
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -22,14 +19,20 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                sh 'mvn clean package'
+                sh 'mvn -B -DskipTests clean package' // Skipping tests during build
             }
         }
 
-        stage('Code Coverage') {
+        stage('Test') {
             steps {
-                echo 'Running tests and generating JaCoCo coverage report...'
-                sh 'mvn clean verify'
+                echo 'Running tests...'
+                sh 'mvn test' // Running tests after build
+            }
+            post {
+                always {
+                    echo 'Publishing test results...'
+                    junit 'target/surefire-reports/*.xml' // Publishing JUnit test results
+                }
             }
         }
 
@@ -42,8 +45,7 @@ pipeline {
                     -Dsonar.sources=src/main/java \
                     -Dsonar.tests=src/test/java \
                     -Dsonar.host.url=${SONAR_HOST_URL} \
-                    -Dsonar.login=${SONAR_TOKEN} \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                    -Dsonar.login=${SONAR_TOKEN}
                 """
             }
         }
@@ -52,15 +54,6 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully!'
-            // Publish JaCoCo Code Coverage Report
-            publishHTML(target: [
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: false,
-                reportDir: 'target/site/jacoco',
-                reportFiles: 'index.html',
-                reportName: 'JaCoCo Code Coverage Report'
-            ])
         }
         failure {
             echo 'Pipeline failed. Please check the logs for errors.'
