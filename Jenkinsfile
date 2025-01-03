@@ -31,7 +31,7 @@ pipeline {
             post {
                 always {
                     echo 'Publishing test results...'
-                    junit 'target//surefire-reports//*.xml' // Publishing JUnit test results
+                    junit 'target/surefire-reports/*.xml' // Publishing JUnit test results
                 }
             }
         }
@@ -44,6 +44,9 @@ pipeline {
                     -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                     -Dsonar.sources=src/main/java \
                     -Dsonar.tests=src/test/java \
+                    -Dsonar.junit.reportPaths=target/surefire-reports \
+                    -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml \
+                    -Dsonar.pmd.reportPaths=target/pmd-duplicates.xml \
                     -Dsonar.host.url=${SONAR_HOST_URL} \
                     -Dsonar.login=${SONAR_TOKEN}
                 """
