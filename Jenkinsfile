@@ -1,10 +1,14 @@
 pipeline {
     agent any
+
     tools {
-        maven 'sonarmaven'
+        maven 'sonarmaven' // Maven installation configured in Jenkins
     }
+
     environment {
-        SONAR_TOKEN = credentials('sonar-token')
+        SONAR_TOKEN = credentials('sonar-token') // Securely retrieve SonarQube token
+        SONAR_HOST_URL = 'http://localhost:9000' // Replace with your SonarQube server URL
+        SONAR_PROJECT_KEY = 'mavenaryan'         // Replace with your project key
     }
 
     stages {
@@ -18,26 +22,27 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
 
         stage('Code Coverage') {
             steps {
                 echo 'Running tests and generating JaCoCo coverage report...'
-                bat 'mvn clean verify'
+                sh 'mvn clean verify'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 echo 'Starting SonarQube Analysis...'
-                bat """
-                    mvn sonar:sonar ^ 
-                    -Dsonar.projectKey=mavenaryan ^ 
-                    -Dsonar.sources=src/test/java ^ 
-                    -Dsonar.host.url=http://localhost:9000 ^ 
-                    -Dsonar.login=%SONAR_TOKEN% ^ 
+                sh """
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    -Dsonar.sources=src/main/java \
+                    -Dsonar.tests=src/test/java \
+                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                    -Dsonar.login=${SONAR_TOKEN} \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                 """
             }
@@ -47,6 +52,7 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully!'
+            // Publish JaCoCo Code Coverage Report
             publishHTML(target: [
                 allowMissing: true,
                 alwaysLinkToLastBuild: true,
