@@ -31,7 +31,7 @@ pipeline {
             post {
                 always {
                     echo 'Publishing test results...'
-                    junit 'target/surefire-reports/*.xml' // Publishing JUnit test results
+                    junit 'target//surefire-reports//*.xml' // Publishing JUnit test results
                 }
             }
         }
