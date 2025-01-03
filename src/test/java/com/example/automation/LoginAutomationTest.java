@@ -1,5 +1,6 @@
 package com.example.automation;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,8 +16,8 @@ class LoginAutomationTest {
 
     @BeforeAll
     static void setup() {
-        // Set up WebDriver for Chrome
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver-win64\\chromedriver.exe");
+        // Set up WebDriver using WebDriverManager (no need to specify path)
+        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
     }
 
