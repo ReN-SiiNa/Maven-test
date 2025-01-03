@@ -51,10 +51,10 @@ class LoginAutomationTest {
 
     @Test
     void testWelcomeMessage() {
-        // Create an instance of App
-        App app = new App();
+        // Create an instance of Application (not App)
+        Application app = new Application();
 
-        // Call the method from App and check the result
+        // Call the method from Application and check the result
         String result = app.welcomeMessage("Aryan");
 
         // Validate the result
