@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>my-maven-project</artifactId>
@@ -51,18 +51,23 @@
                 <version>3.9.1.2184</version>
             </plugin>
 
-            <!-- JaCoCo Maven Plugin -->
+            <!-- JaCoCo Maven Plugin for code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
                 <executions>
+                    <!-- First execution for preparing the agent -->
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Second execution for generating the report -->
                     <execution>
+                        <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
@@ -77,8 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
-
 </project>
